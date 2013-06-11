@@ -1,0 +1,11 @@
+#!/bin/bash
+clear
+echo "Build Duna HD test tasks"
+mkdir 3rparty
+cd 3rparty
+#git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+cd ffmpeg
+./configure
+Makefile
+cd ../..
+
