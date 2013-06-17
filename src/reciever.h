@@ -1,4 +1,4 @@
-#if defined (_reciever_h__)
+#if !defined (_reciever_h__)
 #define _reciever_h__
 
 #include <stdio.h>
@@ -7,12 +7,13 @@
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 
-typedef struct reciever* ptr_reciever;
+typedef  void* RECIVER_HANDLER;
 
-ptr_reciever create_reciever(const char* dest_file_name);
-int start_reciever(ptr_reciever rcv);
-int stop_reciever(ptr_reciever rcv);
-int push_packet(ptr_reciever rcv, AVPacket* packet);  
-
+RECIVER_HANDLER create_reciever(const char* dest_file_name);
+int start_reciever( RECIVER_HANDLER hrcv);
+int stop_reciever( RECIVER_HANDLER hrcv);
+int push_packet( RECIVER_HANDLER hrcv, AVPacket* packet);  
+void destroy_reciever( RECIVER_HANDLER hrcv);
 
 #endif
+

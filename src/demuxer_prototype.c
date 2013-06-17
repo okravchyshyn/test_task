@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <assert.h>
-//#include "ffmpeg.h"
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+#include "reciever.h"
+#include "log.h"
 
 #define MKV_FILE "../demo_content/sample.mkv"
+#define VIDEO_BIN "video.bin"
+#define AUDIO_BIN "audio.bin"
 
 int read_data(void *opaque, unsigned char *buf, int buf_size) {
    FILE *f = (FILE *) opaque;
    int sz = fread(buf, 1, buf_size, f);
-   printf("sizeof(%d) sz(%d) \n", buf_size, sz );
+   //printf("sizeof(%d) sz(%d) \n", buf_size, sz );
 
    return sz;
 }  
@@ -108,16 +111,34 @@ int main() {
 
   display_file_attributes(pFormatCtx);
 
+  int ret;
 
-  AVPacket pkt;
-  av_init_packet(&pkt);
-  pkt.data = NULL;
-  pkt.size = 0;
-  while (av_read_frame(pFormatCtx, &pkt) >= 0) {
-        //decode_packet(&got_frame, 0);
-        av_free_packet(&pkt);
-  }
+  #define VIDEO_STREAM_IDX 0
 
+  DEBUG_PRINT(("create reciever \n"));
+  RECIVER_HANDLER video_handler = create_reciever(VIDEO_BIN);
+  DEBUG_PRINT(("start reading file %p \n", video_handler));
+  do {
+      AVPacket *pkt = (AVPacket*) malloc(sizeof(AVPacket));
+      //av_new_packet(pkt, 0x2048);
+      av_init_packet(pkt);
+      ret = av_read_frame(pFormatCtx, pkt);
+      if(ret < 0) {
+        av_free_packet(pkt);
+        break;
+      } 
+      if( pkt->stream_index == VIDEO_STREAM_IDX ) {
+          ret = push_packet(video_handler, pkt);
+          if( ret < 0 ) {
+             av_free_packet(pkt);
+             break;
+          }
+      }
+
+  } while(1);
+
+  stop_reciever(video_handler);
+  destroy_reciever(video_handler);
 
   fclose(f);
   puts("OK");
