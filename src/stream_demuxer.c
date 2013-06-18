@@ -20,6 +20,8 @@ int demux_stream(int videoIdx, int audioIdx,
   AVProbeData pd;
   AVIOContext *pb;
   AVDictionaryEntry *tag = NULL;
+  RECIVER_HANDLER video_handler = NULL;
+  RECIVER_HANDLER audio_handler = NULL;
 
   const int ioBufferSize = 32768;
   unsigned char * ioBuffer = (unsigned char *)av_malloc(ioBufferSize + FF_INPUT_BUFFER_PADDING_SIZE); // can get av_free()ed by libav
@@ -53,13 +55,13 @@ int demux_stream(int videoIdx, int audioIdx,
   }
 
   DEBUG_PRINT(("create reciever \n"));
-  RECIVER_HANDLER video_handler = create_reciever(VIDEO_BIN);
+  video_handler = create_reciever(VIDEO_BIN);
   if(!video_handler) {
     fprintf(stderr, "Failed during creating video handler\n");
     ret = -1;
     goto fail;
   }
-  RECIVER_HANDLER audio_handler = create_reciever(AUDIO_BIN);
+  audio_handler = create_reciever(AUDIO_BIN);
   if(!audio_handler) {
     fprintf(stderr, "Failed during creating audio handler\n");
     ret = -1;
