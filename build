@@ -1,13 +1,9 @@
 #!/bin/bash
-#clear
 echo "Build Duna HD test tasks"
 #mkdir 3rparty
 cd 3rparty
-#git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
-cd ffmpeg
 tar -xf ffmpeg-1.2.1.tar.gz 
 mv ffmpeg-1.2.1 ffmpeg
-#./configure --disable-everything
 cd ffmpeg
 ./configure 
 make

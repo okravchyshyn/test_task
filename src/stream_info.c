@@ -32,9 +32,6 @@ int main(int argc, char* args[]) {
        printf("Failed to open %s file\n", input_file );
   }
 
-  //while ((tag = av_dict_get(pFormatCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
-  //      printf("%s=%s\n", tag->key, tag->value);
-
   int i;
   for(i = 0; i < pFormatCtx->nb_streams; i++ )
   {
@@ -61,6 +58,8 @@ int main(int argc, char* args[]) {
         printf("\n");
    }
 
+   if(pFormatCtx) avformat_close_input(&pFormatCtx);
+  
    return 0;
 }
 

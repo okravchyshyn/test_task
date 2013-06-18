@@ -69,7 +69,7 @@ int demux_stream(int videoIdx, int audioIdx,
   DEBUG_PRINT(("start reading file %p \n", video_handler));
   do {
       AVPacket *pkt = (AVPacket*) malloc(sizeof(AVPacket));
-      //av_new_packet(pkt, 0x2048);
+      av_new_packet(pkt, 0x2048);
       av_init_packet(pkt);
       ret = av_read_frame(pFormatCtx, pkt);
       if(ret < 0) {
@@ -81,7 +81,7 @@ int demux_stream(int videoIdx, int audioIdx,
     
       if( pkt->stream_index == videoIdx ) {
           ret = push_packet(video_handler, pkt);
-      } if( pkt->stream_index == audioIdx ) {
+      } else if( pkt->stream_index == audioIdx ) {
           ret = push_packet(audio_handler, pkt);
       } else {
         av_free_packet(pkt);

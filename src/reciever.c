@@ -112,7 +112,7 @@ int push_packet( RECIVER_HANDLER hrcv, AVPacket* packet) {
     DEBUG_PRINT(("Push Packet packet(%p) data(%p) size(%d) \n", packet, packet->data, packet->size));
     fifo_add(rcv->queue, packet);
 
-    pthread_cond_signal(&(rcv->cond));
+    pthread_cond_signal(&rcv->cond);
     pthread_mutex_unlock(&rcv->mutex);
 }
 
