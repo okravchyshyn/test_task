@@ -1,0 +1,4 @@
+#!/bin/bash
+#Run server
+src/mini_streamer demo_content/sample.mkv
+

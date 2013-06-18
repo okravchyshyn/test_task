@@ -1,0 +1,17 @@
+Run *build* script to compile the test task.
+
+Executable files are built into src folder:
+
+stream_info     -  list elementary streams in container
+mini_streamer   -  simple server application that waits for incoming connection and stream input file
+mkv_client      -  app that connects to the mini_streamer server and downloads, demuxes and writes audio and video 
+                   elementary streams to the separated files - audio.bin and video.bin respectively
+
+
+The root folder contains test_client and test_server scripts devoted to simplify running test server and client apps.
+
+Output video.bin is not played because demuxing is done without h264_mp4toannexb filter. If it is necessary I can add it to stream_demuxer.c
+
+  
+
+

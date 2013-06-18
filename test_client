@@ -1,0 +1,5 @@
+#!/bin/bash
+#Run test client
+src/mkv_client -i 127.0.0.1 -v 0 -a 1
+
+
