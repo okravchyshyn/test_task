@@ -34,6 +34,7 @@
 
 #include "fifo.h"
 #include "memory.h"
+#include "log.h"
 
 typedef struct fifonode {
 	void *fn_data;
@@ -52,7 +53,7 @@ fifo_new(void)
 
 	f = (fifo_t*) malloc(sizeof (fifo_t));
         memset(f, 0, sizeof(fifo_t));
-
+        DEBUG_PRINT(("Alloc fifo %p\n", f)); 
 	return (f);
 }
 
@@ -117,6 +118,7 @@ fifo_free(fifo_t *f, void (*freefn)(void *))
 		free(tmp);
 	}
 
+        DEBUG_PRINT(("Free fifo %p\n", f)); 
 	free(f);
 }
 

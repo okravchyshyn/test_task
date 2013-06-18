@@ -96,8 +96,14 @@ int stream(int conn_fd) {
    return 0; 
 }
 
+static void close_resources() {
+  if(input_file) fclose(input_file);
+  if(socket_fd >= 0) close(socket_fd);
+}
 
 int main(int argc, char* args[]) {
+  
+  int ret;
 
   if( parse_input_parameters(argc, args) == 0 )
   {
@@ -112,13 +118,29 @@ int main(int argc, char* args[]) {
   }
 
   int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+  if( socket_fd == -1) {
+     perror("Open socket error:");
+     close_resources();
+     exit(-1);
+  }
+
   struct sockaddr_in serv_addr; 
   memset(&serv_addr, '0', sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   serv_addr.sin_port = htons(port); 
-  bind(socket_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
+  ret = bind(socket_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
+  if(ret != 0 ) {
+     perror("Bind port error:");
+     close_resources();
+     exit(-1);
+  }
+
   listen(socket_fd, 1); 
+  if(ret != 0 ) {
+     perror("Listen error:");
+     close_resources();
+  }
 
   printf("Server is listening. Use Cntr-C for exit\n");
   void cntr_c_handler( sig_t s);
@@ -127,7 +149,7 @@ int main(int argc, char* args[]) {
   while(1)
   {
         conn_fd = accept(socket_fd, (struct sockaddr*)NULL, NULL); 
-        int ret = stream(conn_fd);
+        ret = stream(conn_fd);
         if(ret == 0 ) {
            printf("file was transfered\n");
         }
@@ -144,8 +166,7 @@ int main(int argc, char* args[]) {
 
 void cntr_c_handler( sig_t s){
   printf("Close socket\n");
-  close(socket_fd);
-  fclose(input_file);
-  exit(1); 
+  close_resources();
+  exit(0); 
 }
 

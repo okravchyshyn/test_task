@@ -115,6 +115,13 @@ int stream() {
    return 0; 
 }
 
+int read_data(void *opaque, unsigned char *buf, int buf_size) {
+   int socket_fd  = *((int *) opaque);
+   int sz = read( socket_fd, buf, buf_size);
+   DEBUG_PRINT(("read from socket %d bytes \n", (int)sz));
+   
+   return sz;                                                              }  
+
 
 int main(int argc, char* args[]) {
  
@@ -144,7 +151,8 @@ int main(int argc, char* args[]) {
       perror ("connect");
       return -1;
   }
-  stream();
+  
+  demux_stream(video_idx, audio_idx, read_data, &socket_fd);
   //close(socket_fd);
   //fclose(input_file);
 

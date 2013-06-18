@@ -1,7 +1,7 @@
 CFLAGS = -g -DDEBUG
 
 #SRCS=$(wildcard *.c)
-SRCS=fifo.c reciever.c
+SRCS=fifo.c reciever.c stream_demuxer.c
 OBJS=$(SRCS:.c=.o)
 SPATH=../3rparty/ffmpeg/
 LIBS=-L $(SPATH)libavformat -lavformat -L $(SPATH)libavcodec -lavcodec

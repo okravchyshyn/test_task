@@ -21,6 +21,7 @@ typedef struct {
 static void* routine(void *ctx) {
 
   reciever *rcv = (reciever*) ctx;
+  if( !rcv ) return NULL;
 
   DEBUG_PRINT(("Enter into routine\n")); 
   while(!rcv->abort_request) {
@@ -51,14 +52,18 @@ static void* routine(void *ctx) {
 
 static void destroy_all_reciever_objects(RECIVER_HANDLER hrcv) {
    
-    reciever* rcv = (reciever*) hrcv;  
-    
-    pthread_cond_destroy(&(rcv->cond));
-    pthread_mutex_destroy(&(rcv->mutex));
+  reciever* rcv = (reciever*) hrcv;  
+  if( !rcv ) return NULL;
+  
+  DEBUG_PRINT(("Destroy all reciever %p\n", rcv));
+  pthread_cond_destroy(&(rcv->cond));
+  pthread_mutex_destroy(&(rcv->mutex));
 
-    fclose(rcv->dest_file);
+  fifo_free(rcv->queue, NULL);
 
-    free(rcv);
+  fclose(rcv->dest_file);
+
+  free(rcv);
 }
 
 RECIVER_HANDLER create_reciever(const char* dest_file_name) {
@@ -92,12 +97,15 @@ fail:
 void destroy_reciever(RECIVER_HANDLER hrcv) {
    DEBUG_PRINT(("Destroy reciever \n"));
    reciever* rcv = (reciever*) hrcv;  
+   if( !rcv ) return;
+
    destroy_all_reciever_objects(rcv);
 }
 
 int push_packet( RECIVER_HANDLER hrcv, AVPacket* packet) {
 
     reciever* rcv = (reciever*) hrcv;  
+    if( !rcv ) return -1;
 
     pthread_mutex_lock(&rcv->mutex);
 
@@ -117,7 +125,8 @@ int start_reciever(RECIVER_HANDLER rcv) {
 int stop_reciever(RECIVER_HANDLER hrcv) {
     DEBUG_PRINT(("Stop reciever \n"));
     reciever* rcv = (reciever*) hrcv;  
-
+    if( !rcv ) return -1;
+    
     pthread_mutex_lock(&rcv->mutex);
     rcv->abort_request = 1;
     pthread_cond_signal(&(rcv->cond));
