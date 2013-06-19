@@ -136,7 +136,7 @@ int main(int argc, char* args[]) {
      exit(-1);
   }
 
-  listen(socket_fd, 1); 
+  ret = listen(socket_fd, 1); 
   if(ret != 0 ) {
      perror("Listen error:");
      close_resources();
