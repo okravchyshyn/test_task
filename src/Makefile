@@ -4,14 +4,15 @@ CFLAGS = -g -DDEBUG
 SRCS=fifo.c reciever.c stream_demuxer.c
 OBJS=$(SRCS:.c=.o)
 SPATH=../3rparty/ffmpeg/
-LIBS=-L $(SPATH)libavformat -lavformat -L $(SPATH)libavcodec -lavcodec
-LIBS+= -L $(SPATH)libavutil -lavutil -lpthread -lm -lz
-LIBS+= -L $(SPATH)swscale -lswscale 
-LIBS+= -L $(SPATH)avdevice -lavdevice
-LIBS+= -L $(SPATH)avfilter -lavfilter
+LIBS= -L $(SPATH)libavformat -lavformat 
+LIBS+= -L $(SPATH)libavcodec -lavcodec
+LIBS+= -L $(SPATH)libavutil 
+LIBS+= -L $(SPATH)libswscale -lswscale 
+LIBS+= -L $(SPATH)libavdevice -lavdevice
+LIBS+= -L $(SPATH)libavfilter -lavfilter
 #LIBS+= -L $(SPATH)avresample -lavresample
 LIBS+= -L $(SPATH)libswresample -lswresample
-
+LIBS+= -lavutil -lpthread -lm -lz
 
 STREAM_INFO_OBJS=$(OBJS) stream_info.o 
 DEMUXER_PROTOTYPE_OBJS=$(OBJS) demuxer_prototype.o 
